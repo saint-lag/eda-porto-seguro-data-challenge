@@ -14,7 +14,6 @@ missing_values_list <- list()
 # Iterate while the column index is less than or equal to 68
 while (col_index <= 69) {
   # Create the variable name
-  print(col_index)
   
   column_name <- paste0("var", col_index)
   
@@ -62,19 +61,6 @@ for(i in 1:column_data_list_length) {
   }
 }
 
-# Heatmap:
-
-heatmap_data <- data.frame(row = rep(1:column_data_list_length, column_data_list_length),
-                           column = rep(1:column_data_list_length, each = column_data_list_length),
-                           value = as.vector(correlation_matrix))
-
-color_palette <- colorRampPalette(brewer.pal(11, "RdBu"))(100)
-
-heatmap_plot <- ggplot(heatmap_data, aes(x = column, y = row, fill = value)) +
-  geom_tile() +
-  scale_fill_gradientn(colors = color_palette) +
-  labs(x = "Column", y = "Row", title = "Correlation Matrix Heatmap")
-
 
 ## Outliers:
 
@@ -107,9 +93,10 @@ boxplot_outlier <- function(x) {
   current_matrix_value <- column_data_list[[x]]
   current_outliers <- outliers_list[[x]]
   boxplot(current_matrix_value, main = paste("Matrix", x), outline = FALSE)
-  if (length(outliers) > 0) {
-    points(rep(1, length(outliers)), outliers, col = "red", pch = 16)
-  }  
+  if (length(current_outliers) > 0) {
+    points(rep(1, length(current_outliers)), current_outliers, col = "red", pch = 16)
+  }
 }
 
-boxplot_outlier(20)
+boxplot_outlier(68)
+
