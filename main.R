@@ -11,24 +11,21 @@ column_data_list <- list()
 # Missing Values List
 missing_values_list <- list()
 
-# Iterate while the column index is less than or equal to 68
-while (col_index <= 69) {
+# Running through train data
+while (col_index <= length(col(train))) {
   # Create the variable name
-  
   column_name <- paste0("var", col_index)
   
   # Access the column using the variable name
   column_data <- train[[column_name]]
   
   # Perform operations on the column
-  
   column_data_list[[col_index]] <- column_data
   
-  # Missing Values
+  # Searching for missing values 
   current_missing_value <- sum(is.na(column_data))
+  # Filling missing_values_list
   missing_values_list[[col_index]] <- current_missing_value
-  
-  print(current_missing_value)
   
   # Increment the column index
   col_index <- col_index + 1
@@ -47,20 +44,48 @@ missing_values_list[["y"]] <- y_missing_values
 
 ## Data Distribution:
 
-## Pair Correlation:
+# Creating a new dataframe for each data type
+quali_nom <- metadata[metadata$Variavel.tipo=="Qualitativo nominal" & metadata$Variavel.cod != 'id',]
+quali_ord <- metadata[metadata$Variavel.tipo=="Qualitativo ordinal", ]
+quant_disc <- metadata[metadata$Variavel.tipo=="Quantitativo discreto", ]
+quant_cont <- metadata[metadata$Variavel.tipo=="Quantitativo continua", ]
 
-# Utils
-column_data_list_length <-length(column_data_list)
+# Creating a list for each new dataframe
+quali_nom_list <- list()
+quali_ord_list <- list()
+quant_disc_list <- list()
+quant_cont_list <- list()
 
-# Empty correlation matrix
-correlation_matrix <- matrix(NA, nrow = column_data_list_length, ncol = column_data_list_length)
-
-for(i in 1:column_data_list_length) {
-  for(j in 1:column_data_list_length) {
-    correlation_matrix[i, j] <- cor(column_data_list[[i]], column_data_list[[j]])
+create_list_for_df <- function(df) {
+  col_index <- 1
+  
+  # Temporary list
+  df_list <- list()
+  
+  while (col_index <= length(col(df[1]))) {
+    column_name <- df$Variavel.cod[col_index]
+    
+    # Access the column using the variable name
+    column_data <- train[[column_name]]
+    
+    # Increment the list
+    df_list[[col_index]] <- column_data
+    
+    # Counter
+    col_index <- col_index + 1 
   }
+  return(df_list)
 }
 
+quali_ord_list <- create_list_for_df(quali_ord)
+quali_nom_list <- create_list_for_df(quali_nom)
+quant_cont_list <- create_list_for_df(quant_cont)
+quant_disc_list <- create_list_for_df(quant_disc)
+
+## Pair Correlation:
+
+## Utils
+column_data_list_length <-length(column_data_list)
 
 ## Outliers:
 
@@ -92,11 +117,15 @@ outliers_list <- detect_outliers(column_data_list)
 boxplot_outlier <- function(x) {
   current_matrix_value <- column_data_list[[x]]
   current_outliers <- outliers_list[[x]]
-  boxplot(current_matrix_value, main = paste("Matrix", x), outline = FALSE)
+  boxplot(current_matrix_value, main = paste("Column", x), outline = FALSE)
   if (length(current_outliers) > 0) {
     points(rep(1, length(current_outliers)), current_outliers, col = "red", pch = 16)
   }
 }
 
-boxplot_outlier(68)
+# Outliers for each data type:
+
+
+
+  
 
