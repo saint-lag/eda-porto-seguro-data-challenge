@@ -122,7 +122,7 @@ cor_matrix_quant_cont_disc <- cor(do.call(cbind, quant_cont_list), do.call(cbind
 # Continuos X Nominal
 cor_matrix_quant_cont_nom <- cor(do.call(cbind, quant_cont_list), do.call(cbind, quali_nom_list))
 # Discrete X Nominal
-cor_matrix_quant_disc_nom <- cor(do.call(cbind, quant_cont_list), do.call(cbind, quali_nom_list))
+cor_matrix_quant_disc_nom <- cor(do.call(cbind, quant_disc_list), do.call(cbind, quali_nom_list))
 
 # Summaries type by type:
 corrplot.mixed(cor_matrix_quant_cont_disc, tl.col="black", tl.pos="lt")
