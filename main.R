@@ -100,17 +100,36 @@ for(i in seq(length(quant_cont_list))) {
 ## Pair Correlation:
 
 # With relation to y:
+
+# Removing y for this analysis
+temp_quant_disc_list <- quant_disc_list
+temp_quant_disc_list$y <- NULL
+
 cor_quant_cont_y <- sapply(quant_cont_list, function(x) cor(x, train$y))
-cor_quant_disc_y <- sapply(quant_disc_list, function(x) cor(x, train$y))
+cor_quant_disc_y <- sapply(temp_quant_disc_list, function(x) cor(x, train$y))
 cor_quali_ord_y <- sapply(quali_ord_list, function(x) cor(x, train$y))
 cor_quali_nom_y <- sapply(quali_nom_list, function(x) cor(x, train$y))
 
-# Pairs:
+# Summaries in relation to y:
+summary(cor_quali_nom_y)
+summary(cor_quali_ord_y)
+summary(cor_quant_cont_y)
+summary(cor_quant_disc_y)
+
+# Pairs in each type:
+
 cor_matrix_quant_cont <- cor(do.call(cbind, quant_cont_list))
 cor_matrix_quant_disc <- cor(do.call(cbind, quant_disc_list))
 cor_matrix_quali_nom <- cor(do.call(cbind, quali_nom_list))
 cor_matrix_quali_ord <- cor(do.call(cbind, quali_ord_list))
 
+# Pairs type by type:
+# Continuos X Discrete
+cor_matrix_quant_cont_disc <- cor(do.call(cbind, quant_cont_list), do.call(cbind, quant_disc_list))
+# Continuos X Nominal
+cor_matrix_quant_cont_nom <- cor(do.call(cbind, quant_cont_list), do.call(cbind, quali_nom_list))
+# Discrete X Nominal
+cor_matrix_quant_disc_nom <- cor(do.call(cbind, quant_cont_list), do.call(cbind, quali_nom_list))
 # Selecting high correlations
 
 # Threshold
@@ -119,7 +138,9 @@ threshold <- 0.7
 # Plotting
 corrplot.mixed(cor_matrix_quant_cont, tl.col="black", tl.pos="lt")
 corrplot.mixed(cor_matrix_quant_disc, tl.col="black", tl.pos="lt")
+corrplot.mixed(cor_matrix_quali_nom, tl.col="black", tl.pos="lt")
 
+  
 ## Utils
 column_data_list_length <-length(column_data_list)
 
