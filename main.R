@@ -1,6 +1,7 @@
 # libraries
 library(ggplot2)
 library(corrplot)
+library(outliers)
 
 # Importing data
 metadata=read.csv("metadata.csv")
@@ -172,36 +173,4 @@ detect_outliers <- function(matrix_data) {
   
   return(outliers)
 }
-
-# Find outliers in the list of matrices
-outliers_list <- detect_outliers(column_data_list)
-
-
-boxplot_outlier <- function(x, df) {
-  current_matrix_value <- column_data_list[[x]]
-  current_outliers <- outliers_list[[x]]
-  if(missing(df)) {
-    boxplot(current_matrix_value, main = paste("Column", x), outline = FALSE) 
-  } else {
-    boxplot(current_matrix_value, main = paste(df$Variavel.cod[x]))
-  }
-  if (length(current_outliers) > 0) {
-    points(rep(1, length(current_outliers)), current_outliers, col = "red", pch = 16)
-  }
-}
-
-# Outliers for each data type:
-
-boxplot_outlier_of_df_list <- function(df_list, df){
-  for (i in seq(length(df_list))) {
-    boxplot_outlier(i, df)
-  }
-}  
-
-boxplot_outlier_of_df_list(quant_disc_list, quant_disc)
-boxplot_outlier_of_df_list(quant_cont_list, quant_cont)
-boxplot_outlier_of_df_list(quali_nom_list, quali_nom)
-boxplot_outlier_of_df_list(quali_ord_list, quali_ord)
-
-
 
